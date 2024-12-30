@@ -9,6 +9,7 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f4f4f4;
+    scroll-behavior: smooth; /* Smooth scrolling effect */
 }
 
 /* Header */
@@ -16,6 +17,9 @@ header {
     background-color: #333;
     color: white;
     padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 .navbar {
     display: flex;
@@ -30,12 +34,21 @@ header {
     text-decoration: none;
     font-weight: bold;
 }
+.navbar a:hover {
+    color: #f39c12;
+}
 
-/* About Section */
+/* About Section - Fullscreen */
 #about {
+    height: 100vh; /* Takes full screen height */
     text-align: center;
-    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background-color: #fff;
+    position: relative;
+    z-index: 1;
 }
 .profile-img {
     border-radius: 50%;
@@ -43,6 +56,10 @@ header {
     height: 150px;
     object-fit: cover;
     margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+.profile-img:hover {
+    transform: scale(1.1);
 }
 
 /* Projects Section */
@@ -61,6 +78,11 @@ header {
     padding: 1rem;
     border: 1px solid #ddd;
     text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.project-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .project-item img {
     width: 100%;
