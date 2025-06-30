@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Steam User Info</title>
+</head>
+<body>
+  <h1>Steam User Info</h1>
+  <div id="user-info">Loading...</div>
+
+  <script>
+    const apiKey = '664ACC7D973D4D830337EA532C5276E9'; // Replace with your real API key
+    const steamID = '76561198861075110';
+    const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=664ACC7D973D4D830337EA532C5276E9&steamids=76561198861075110`;
+    const oldUrl = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apikey}&steamids=${steamID}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const player = data.response.players[0];
+        const info = `
+          <img src="${player.avatarfull}" alt="Avatar"><br>
+          <strong>Username:</strong> ${player.personaname} <br>
+          <strong>Status:</strong> ${getPersonaState(player.personastate)} <br>
+          <strong>Profile URL:</strong> <a href="${player.profileurl}" target="_blank">${player.profileurl}</a>
+        `;
+        document.getElementById('user-info').innerHTML = info;
+      })
+      .catch(error => {
+        document.getElementById('user-info').textContent = 'Failed to load user info.';
+        console.error(error);
+    });
+
+    function getPersonaState(state) {
+      const states = [
+        'Offline', 'Online', 'Busy', 'Away',
+        'Snooze', 'Looking to Trade', 'Looking to Play'
+      ];
+      return states[state] || 'Unknown';
+    }
+
+  </script>
+</body>
+</html>
