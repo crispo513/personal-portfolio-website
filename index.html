@@ -5,44 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Website</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Website</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script>
+        window.addEventListener("scroll", () => {
+            const aboutSection = document.getElementById("about");
+            const opacity = 1 - window.scrollY / window.innerHeight;
+            aboutSection.style.opacity = opacity > 0 ? opacity : 0;
+        });
+    </script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        const projectItems = document.querySelectorAll(".project-item");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add("fade-in");
+                        entry.target.classList.remove("fade-out");
+                    }, index * 200); // Adds a delay for each item
+                } else {
+                    setTimeout(() => {
+                        entry.target.classList.remove("fade-in");
+                        entry.target.classList.add("fade-out");
+                    }, index * 200);
+                }
+            });
+        }, {
+            threshold: 0.6, // Trigger when 10% of the element is visible
+        });
+
+            projectItems.forEach((item) => observer.observe(item));
+        });
+    </script>
+    
 </head>
 <body>
-    <header>
-        <nav>
-            <ul class="navbar">
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
     <main>
         <section id="about">
             <div class="profile">
                 <img src="images/profile.jpg" alt="Profile Picture" class="profile-img">
-                <h1>Your Name</h1>
-                <p>Hello! I'm [Your Name], a [Your Profession]. Welcome to my portfolio!</p>
+                <h1>Hao Lun Li</h1>
+                <p>Hello! I'm Hao Lun Li and I am currently applying for many universities. Welcome to my portfolio!</p>
             </div>
         </section>
         <section id="projects">
             <h2>My Projects</h2>
             <div class="project-gallery">
-                <div class="project-item">
-                    <img src="images/project1.jpg" alt="Project 1">
-                    <h3>Project 1</h3>
-                    <p>A brief description of the project.</p>
+                <div class="project-item fade-in-out">
+                    <img src="images/lighthouselogo.png" alt="LighthouseLogo">
+                    <h3>Lighthouse Effect: Founder</h3>
+                    <p>Designed REACH framework as 5-step plan for youth, curated advocacy thru vids/articles, partnered w/ Future of Investment campaign, reached 400+ youth.</p>
+                    <a href="https://haolun7788.wixsite.com/lighthouse-effect">
+                        <button>Lighthouse Effect</button>
+                    </a>
                 </div>
-                <div class="project-item">
-                    <img src="images/project2.jpg" alt="Project 2">
-                    <h3>Project 2</h3>
-                    <p>A brief description of the project.</p>
+                <div class="project-item fade-in-out">
+                    <img src="images/cyp.jpg" alt="CYP">
+                    <h3>Young Pioneers Forum: Youth Advocate, Future of Technology</h3>
+                    <p>Worked with leaders of 5 UN agencies, co-designed 360° of Innovation Campaign, showcasing 360 students' innovative projects.</p>
+                    <a href="https://www.youngpioneersforum.org">
+                        <button>Young Pioneers Forum</button>
+                    </a>
                 </div>
-                <div class="project-item">
-                    <img src="images/project3.jpg" alt="Project 3">
-                    <h3>Project 3</h3>
-                    <p>A brief description of the project.</p>
+                <div class="project-item fade-in-out">
+                    <img src="images/cri.jpg" alt="CRI">
+                    <h3>Catalysing Research Institute: Global Leadership Team, Co-Head: Data Science Div.</h3>
+                    <p>Helped develop, co-hosted + presented at the convention during UNGA 2024, recruited new researchers from 3 cities, 13k+ social media impressions.</p>
+                    <a href="https://www.catalysingresearch.org">
+                        <button>Catalysing Research Institute</button>
+                    </a>
                 </div>
-            </div>
+            </div>            
         </section>
         <section id="contact">
             <h2>Contact Me</h2>
@@ -55,3 +97,4 @@
     </footer>
 </body>
 </html>
+
