@@ -21,16 +21,32 @@
           return states[state] || 'Unknown';
         }
 
+        const personaColors = {
+          'Offline': '#888',
+          'Online': '#28a745',
+          'Busy': '#dc3545',
+          'Away': '#ffc107',
+          'Snooze': '#17a2b8',
+          'Looking to Trade': '#6610f2',
+          'Looking to Play': '#fd7e14',
+          'Unknown': '#6c757d'
+        };
+
         function formatTimestamp(unixTime) {
           const date = new Date(unixTime * 1000);
           return date.toLocaleString();
         }
 
+        const state = getPersonaState(player.personastate);
+        const color = personaColors[state];
+
         // updated player info
         const html = `
           <h1>${player.personaname}<\h1>
           <img src="${[player.avatarfull]}">
-          <h2>Currently ${getPersonaState(player.personastate)} since ${formatTimestamp(player.timecreated)}<\h2>
+          <p></p>
+          <span style="color: ${color}; font-weight: bold;">${state}</span>
+          <h2></h2>
           <strong>Last Online:</strong> ${formatTimestamp(player.lastlogoff)}<br>
           <a href="${player.profileurl}" target="_blank">View Steam Profile</a>
         `;
