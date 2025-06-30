@@ -8,7 +8,7 @@
   <div id="user-info">Test123</div>
 
   <script>
-    fetch("https://portfolio-website-pied-omega.vercel.app/api/steam?steamid=76561198861075110")
+    fetch("https://portfolio-website-pied-omega.vercel.app/api/profile?steamid=76561198861075110")
       .then(response => response.json())
       .then(data => {
         const player = data.response.players[0];
@@ -44,25 +44,34 @@
       document.getElementById('user-info').innerHTML = 'Failed to load user info.';
     });
   </script>
+
+  <h2>Friends</h2>
+  <ul id="friends-list"></ul>
+  
   <script>
     fetch("https://portfolio-website-pied-omega.vercel.app/api/friends?steamid=76561198861075110")
+      .then(res => res.json())
+      .then(data => {
+        const steamIDs = data.friendslist.friends.map(friend => friend.steamid).slice(0, 100); // Steam API max: 100
+        const steamIDString = steamIDs.join(',');
+
+        return fetch(`https://portfolio-website-pied-omega.vercel.app/api/players?steamids=${steamIDString}`);
+      })
       .then(response => response.json())
       .then(data => {
-        const player = data.response.players[0];
+        const friends = data.friendslist.friends;
+        const list1 = document.querySelector('ul');
 
-        function getPersonaState(state) {
-          const states = [
-            'Offline', 'Online', 'Busy', 'Away',
-            'Snooze', 'Looking to Trade', 'Looking to Play'
-          ];
-          return states[state] || 'Unknown';
-        }
+        friends.forEach(friend => {
+          list1.insertAdjacentHTML('beforeend', `
+          <li>
+            <img src="${friends.avatar}" alt="Avatar" style="border-radius:50%; width:32px; vertical-align:middle;">
+            <a href="${friends.profileurl}" target="_blank">${friends.personaname}</a>
+          </li>
+        `);
+        })
 
-        function formatTimestamp(unixTime) {
-          const date = new Date(unixTime * 1000);
-          return date.toLocaleString();
-        }
-
+        /*
         // updated player info
         const html = `
           <h1>${player.personaname}<\h1>
@@ -72,8 +81,8 @@
           <a href="${player.profileurl}" target="_blank">View Steam Profile</a>
         `;
         
-          document.getElementById('user-info').innerHTML = html;
-        // display player info
+          document.getElementById('user-info').innerHTML = html; */
+        // display player info 
         console.log(data)
       })
     .catch(error => {
