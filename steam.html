@@ -55,20 +55,21 @@
         const steamIDs = data.friendslist.friends.map(friend => friend.steamid).slice(0, 100); // Steam API max: 100
         const steamIDString = steamIDs.join(',');
 
-        return fetch(`https://portfolio-website-pied-omega.vercel.app/api/players?steamids=${steamIDString}`);
+        return fetch(`https://portfolio-website-pied-omega.vercel.app/api/friends_pfp?steamids=${steamIDString}`);
       })
       .then(response => response.json())
       .then(data => {
-        const friends = data.friendslist.friends;
-        const list1 = document.querySelector('ul');
+        const friends = data.response.players;
+        const list1 = document.getElementById('friends-list');
 
         friends.forEach(friend => {
           list1.insertAdjacentHTML('beforeend', `
           <li>
-            <img src="${friends.avatar}" alt="Avatar" style="border-radius:50%; width:32px; vertical-align:middle;">
+            <img src="${[friends.avatarmedium]}" alt="Avatar" style="border-radius:50%; width:32px; vertical-align:middle;">
             <a href="${friends.profileurl}" target="_blank">${friends.personaname}</a>
           </li>
         `);
+
         })
 
         /*
@@ -84,6 +85,7 @@
           document.getElementById('user-info').innerHTML = html; */
         // display player info 
         console.log(data)
+        console.log(friends[0]);
       })
     .catch(error => {
       console.error('Fetch failed:', error);
