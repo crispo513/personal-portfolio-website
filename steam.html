@@ -65,8 +65,8 @@
         friends.forEach(friend => {
           list1.insertAdjacentHTML('beforeend', `
           <li>
-            <img src="${[friends.avatarmedium]}" alt="Avatar" style="border-radius:50%; width:32px; vertical-align:middle;">
-            <a href="${friends.profileurl}" target="_blank">${friends.personaname}</a>
+            <img src="${[friend.avatarmedium]}" alt="Avatar" style="border-radius:80%; width:64px; vertical-align:middle;">
+            <a href="${friend.profileurl}" target="_blank">${friend.personaname}</a>
           </li>
         `);
 
