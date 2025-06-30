@@ -8,14 +8,14 @@
   <div id="user-info">Test1</div>
 
   <script>
-
+    fetch("https://portfolio-website-pied-omega.vercel.app/api/steam?steamid=76561198861075110")
+        .then(response => response.json())
+        .then(data => {
+            const player = data.response.players[0];
+            // display player info
+            console.log(data)
+    });
        
-    fetch(url)
-        .then(response => res.json())
-        .then(data =>  {
-            console.log(data);
-        });
-
   </script>
 </body>
 </html>
