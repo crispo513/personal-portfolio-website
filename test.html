@@ -1,0 +1,54 @@
+<<<<<<< Updated upstream
+=======
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Click Counter</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <h3>👁️ Views/Clicks: <span id="counter">Loading...</span></h3>
+  <button id="incrementBtn">Click Me</button>
+
+  <script>
+    // 1. Initialize Supabase
+    const supabaseUrl = 'https://shyidqkehfeyxnabdjkg.supabase.co'; // replace
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoeWlkcWtlaGZleXhuYWJkamtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIxMzg5MjQsImV4cCI6MjA2NzcxNDkyNH0.dWWUDBaCcgzWxZdXYj6ZFrgnsW9FajYvQnctFTx63mQ'; // replace with anon key
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const counterEl = document.getElementById('counter');
+    const button = document.getElementById('incrementBtn');
+
+    async function fetchCounter() {
+      const { data, error } = await supabaseClient
+        .from('counters')
+        .select('value')
+        .eq('name', 'clicks')
+        .single();
+
+      if (error) {
+        console.error(error);
+        counterEl.textContent = 'Error';
+      } else {
+        counterEl.textContent = data.value;
+      }
+    }
+
+    async function incrementCounter() {
+      const { data, error } = await supabaseClient.rpc('increment_clicks');
+      if (error) {
+        console.error(error);
+      } else {
+        fetchCounter(); // refresh display
+      }
+    }
+
+    // On page load
+    fetchCounter();
+
+    // On button click
+    button.addEventListener('click', incrementCounter);
+  </script>
+</body>
+</html>
+>>>>>>> Stashed changes
