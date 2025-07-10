@@ -2,8 +2,8 @@
 <html>
 <head>
   <title>Shared Click Counter</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
     async function incrementCount() {
     const res = await fetch('/api/increment', {
@@ -15,7 +15,7 @@
     document.getElementById('counter').textContent = data.count;
     }
 
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const COUNTER_ID = 'eye-clicks';
 
   async function loadCount() {
