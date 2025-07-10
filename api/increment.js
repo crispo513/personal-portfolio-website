@@ -1,45 +1,30 @@
-// /api/increment.js
-
 import { createClient } from '@supabase/supabase-js';
 
-// Environment variables from Vercel dashboard
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE
-);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE;
 
-// Counter row ID
-const COUNTER_ID = 'eye-clicks';
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { data, error } = await supabase.rpc('increment_counter', {
-      row_id: COUNTER_ID
-    });
-
-    if (error) {
-      console.error('Supabase RPC error (POST):', error);
-      return res.status(500).json({ error: error.message });
-    }
-
-    return res.status(200).json({ count: data.count });
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
-  if (req.method === 'GET') {
+  try {
+    // Atomic increment in one query using Postgres SQL update
     const { data, error } = await supabase
-      .from('counters')
+      .from('button_clicks')
+      .update({ count: supabase.raw('count + 1') })
       .select('count')
-      .eq('id', COUNTER_ID)
-      .single();
+      .limit(1);
 
     if (error) {
-      console.error('Supabase error (GET):', error);
-      return res.status(500).json({ error: error.message });
+      throw error;
     }
 
-    return res.status(200).json({ count: data.count });
+    res.status(200).json({ count: data[0].count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  // Unsupported HTTP method
-  return res.status(405).json({ error: 'Method not allowed' });
 }

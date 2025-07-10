@@ -1,37 +1,51 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>View Counter</title>
-  </head>
-  <body>
-    <h3>👁️ Views: <span id="counter">Loading...</span></h3>
-    <button id="click-btn">Click Me</button>
+<head>
+  <title>Click Counter</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <h3>👁️ Views/Clicks: <span id="counter">Loading...</span></h3>
+  <button id="incrementBtn">Click Me</button>
 
-    <script>
-      // Load count on page load
-      async function loadCount() {
-        const res = await fetch('/api/increment'); // GET request
-        const data = await res.json();
-        document.getElementById('counter').textContent = data.count;
+  <script>
+    // 1. Initialize Supabase
+    const supabaseUrl = 'https://shyidqkehfeyxnabdjkg.supabase.co'; // replace
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoeWlkcWtlaGZleXhuYWJkamtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIxMzg5MjQsImV4cCI6MjA2NzcxNDkyNH0.dWWUDBaCcgzWxZdXYj6ZFrgnsW9FajYvQnctFTx63mQ'; // replace with anon key
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const counterEl = document.getElementById('counter');
+    const button = document.getElementById('incrementBtn');
+
+    async function fetchCounter() {
+      const { data, error } = await supabaseClient
+        .from('counters')
+        .select('value')
+        .eq('name', 'clicks')
+        .single();
+
+      if (error) {
+        console.error(error);
+        counterEl.textContent = 'Error';
+      } else {
+        counterEl.textContent = data.value;
       }
+    }
 
-      // Handle click to increment
-      async function incrementCount() {
-        const res = await fetch('/api/increment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ row_id: 'eye-clicks' })
-        });
-        const data = await res.json();
-        document.getElementById('counter').textContent = data.count;
+    async function incrementCounter() {
+      const { data, error } = await supabaseClient.rpc('increment_clicks');
+      if (error) {
+        console.error(error);
+      } else {
+        fetchCounter(); // refresh display
       }
+    }
 
-      // Wait until DOM is ready
-      document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('click-btn').addEventListener('click', incrementCount);
-        loadCount();
-      });
-    </script>
-  </body>
+    // On page load
+    fetchCounter();
+
+    // On button click
+    button.addEventListener('click', incrementCounter);
+  </script>
+</body>
 </html>
