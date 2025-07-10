@@ -1,54 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Shared Click Counter</title>
-</head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
+    <h3>👁️ Views: <span id="counter">Loading...</span></h3>
+    <button id="click-btn">Click Me</button>
+
+    <script>
+    async function loadCount() {
+        const res = await fetch('/api/increment');
+        const data = await res.json();
+        if (data.count !== undefined) {
+        document.getElementById('counter').textContent = data.count;
+        }
+    }
+
     async function incrementCount() {
-    const res = await fetch('/api/increment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ row_id: 'eye-clicks' })
+        const res = await fetch('/api/increment', {
+        method: 'POST'
+        });
+        const data = await res.json();
+        if (data.count !== undefined) {
+        document.getElementById('counter').textContent = data.count;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('click-btn').addEventListener('click', incrementCount);
+        loadCount();
     });
-    const data = await res.json();
-    document.getElementById('counter').textContent = data.count;
-    }
-
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-  const COUNTER_ID = 'eye-clicks';
-
-  async function loadCount() {
-    const { data, error } = await supabase
-      .from('counters')
-      .select('count')
-      .eq('id', COUNTER_ID)
-      .single();
-
-    if (data) {
-      document.getElementById('counter').textContent = data.count;
-    } else {
-      console.error(error);
-    }
-  }
-
-  async function incrementCount() {
-    const { data, error } = await supabase.rpc('increment_counter', {
-      row_id: COUNTER_ID
-    });
-
-    if (data) {
-      document.getElementById('counter').textContent = data.count;
-    } else {
-      console.error(error);
-    }
-  }
-
-  document.getElementById('click-btn').addEventListener('click', incrementCount);
-  loadCount(); // fetch count when page loads
-</script>
-<body>
-  <h3>👁️ Views: <span id="counter">Loading...</span></h3>
-  <button id="click-btn">Click Me</button>
-</body>
+    </script>
 </html>
