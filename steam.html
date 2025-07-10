@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Steam User Info</title>
+</head>
+<body>
+  <h1>Steam User Info</h1>
+  <div id="user-info">Test123</div>
+
+  <script>
+    fetch("https://portfolio-website-pied-omega.vercel.app/api/profile?steamid=76561198861075110")
+      .then(response => response.json())
+      .then(data => {
+        const player = data.response.players[0];
+
+        function getPersonaState(state) {
+          const states = [
+            'Offline', 'Online', 'Busy', 'Away',
+            'Snooze', 'Looking to Trade', 'Looking to Play'
+          ];
+          return states[state] || 'Unknown';
+        }
+
+        const personaColors = {
+          'Offline': '#888',
+          'Online': '#28a745',
+          'Busy': '#dc3545',
+          'Away': '#ffc107',
+          'Snooze': '#17a2b8',
+          'Looking to Trade': '#6610f2',
+          'Looking to Play': '#fd7e14',
+          'Unknown': '#6c757d'
+        };
+
+        function formatTimestamp(unixTime) {
+          const date = new Date(unixTime * 1000);
+          return date.toLocaleString();
+        }
+
+        const state = getPersonaState(player.personastate);
+        const color = personaColors[state];
+
+        // updated player info
+        const html = `
+          <h1>${player.personaname}<\h1>
+          <img src="${[player.avatarfull]}">
+          <p></p>
+          <span style="color: ${color}; font-weight: bold;">${state}</span>
+          <h2></h2>
+          <strong>Last Online:</strong> ${formatTimestamp(player.lastlogoff)}<br>
+          <a href="${player.profileurl}" target="_blank">View Steam Profile</a>
+        `;
+        
+          document.getElementById('user-info').innerHTML = html;
+        // display player info
+        console.log(data)
+      })
+    .catch(error => {
+      console.error('Fetch failed:', error);
+      document.getElementById('user-info').innerHTML = 'Failed to load user info.';
+    });
+  </script>
+
+  <h2>Friends</h2>
+  <ul id="friends-list"></ul>
+  
+  <script>
+    fetch("https://portfolio-website-pied-omega.vercel.app/api/friends?steamid=76561198861075110")
+      .then(res => res.json())
+      .then(data => {
+        const steamIDs = data.friendslist.friends.map(friend => friend.steamid).slice(0, 100); // Steam API max: 100
+        const steamIDString = steamIDs.join(',');
+
+        return fetch(`https://portfolio-website-pied-omega.vercel.app/api/friends_pfp?steamids=${steamIDString}`);
+      })
+      .then(response => response.json())
+      .then(data => {
+        const friends = data.response.players;
+        const list1 = document.getElementById('friends-list');
+
+        friends.forEach(friend => {
+          list1.insertAdjacentHTML('beforeend', `
+          <li>
+            <img src="${[friend.avatarmedium]}" alt="Avatar" style="border-radius:80%; width:64px; vertical-align:middle;">
+            <a href="${friend.profileurl}" target="_blank">${friend.personaname}</a>
+          </li>
+        `);
+
+        })
+
+        /*
+        // updated player info
+        const html = `
+          <h1>${player.personaname}<\h1>
+          <img src="${[player.avatarfull]}">
+          <h2>Currently ${getPersonaState(player.personastate)} since ${formatTimestamp(player.timecreated)}<\h2>
+          <strong>Last Online:</strong> ${formatTimestamp(player.lastlogoff)}<br>
+          <a href="${player.profileurl}" target="_blank">View Steam Profile</a>
+        `;
+        
+          document.getElementById('user-info').innerHTML = html; */
+        // display player info 
+        console.log(data)
+        console.log(friends[0]);
+      })
+    .catch(error => {
+      console.error('Fetch failed:', error);
+      document.getElementById('user-info').innerHTML = 'Failed to load user info.';
+    });
+  </script>
+</body>
+</html>
