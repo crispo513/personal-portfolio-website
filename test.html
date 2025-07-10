@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>View Counter</title>
+  </head>
+  <body>
     <h3>👁️ Views: <span id="counter">Loading...</span></h3>
     <button id="click-btn">Click Me</button>
 
     <script>
-    async function loadCount() {
-        const res = await fetch('/api/increment');
+      // Load count on page load
+      async function loadCount() {
+        const res = await fetch('/api/increment'); // GET request
         const data = await res.json();
-        if (data.count !== undefined) {
         document.getElementById('counter').textContent = data.count;
-        }
-    }
+      }
 
-    async function incrementCount() {
+      // Handle click to increment
+      async function incrementCount() {
         const res = await fetch('/api/increment', {
-        method: 'POST'
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ row_id: 'eye-clicks' })
         });
         const data = await res.json();
-        if (data.count !== undefined) {
         document.getElementById('counter').textContent = data.count;
-        }
-    }
+      }
 
-    document.addEventListener('DOMContentLoaded', () => {
+      // Wait until DOM is ready
+      document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('click-btn').addEventListener('click', incrementCount);
         loadCount();
-    });
+      });
     </script>
+  </body>
 </html>
